@@ -1,0 +1,32 @@
+from graphviz import Digraph
+
+# Crear el gráfico del diagrama ER
+er_diagram = Digraph("ER Diagram", format="png")
+er_diagram.attr(rankdir="LR", size="8,5")
+
+# Nodo de las entidades
+er_diagram.node("Usuarios", "Usuarios\n(ID_usuario, Nombre,\n Dirección, Correo_electrónico)", shape="box")
+er_diagram.node("Libros", "Libros\n(ID_libro, Título,\n Autor, Género, Año_publicación)", shape="box")
+er_diagram.node("Prestamos", "Préstamos\n(ID_prestamo, ID_usuario, ID_libro,\n Fecha_prestamo, Fecha_devolucion)", shape="box")
+
+# Relaciones
+er_diagram.edge("Usuarios", "Prestamos", label="1:N")
+er_diagram.edge("Libros", "Prestamos", label="1:N")
+
+# Renderizar el diagrama
+diagram_path = "/mnt/data/ER_Diagram_Library"
+er_diagram.render(diagram_path, cleanup=True)
+
+diagram_path + ".png"
+SELECT Libros.Titulo, Libros.Autor, Prestamos.Fecha_prestamo, Prestamos.Fecha_devolucion
+FROM Prestamos
+JOIN Libros ON Prestamos.ID_libro = Libros.ID_libro
+WHERE Prestamos.Fecha_prestamo BETWEEN '2024-01-01' AND '2024-12-31';
+SELECT Usuarios.Nombre, Usuarios.Correo_electronico, Libros.Titulo, Prestamos.Fecha_devolucion
+FROM Prestamos
+JOIN Usuarios ON Prestamos.ID_usuario = Usuarios.ID_usuario
+JOIN Libros ON Prestamos.ID_libro = Libros.ID_libro
+WHERE Prestamos.Fecha_devolucion > CURRENT_DATE;
+SELECT Titulo, Autor, Genero, Año_publicacion
+FROM Libros
+WHERE Autor LIKE '%Gabriel García Márquez%' OR Genero LIKE '%Realismo mágico%';
